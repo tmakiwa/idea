@@ -21,7 +21,7 @@ public function store(Request $request)
         'password' => ['required', 'string', 'min:9', 'max:255'],
     ]);
 
-    if (Auth::attempt($attributes)){
+    if (! Auth::attempt($attributes)){
 
         return back()
         ->withErrors(['password' => 'We are unable to authenticate the provided credentials.'])
@@ -30,16 +30,19 @@ public function store(Request $request)
 
     $request->session()->regenerate();
 
-    return redirect()->intended('/')->with('success', 'You are logged in');
+    return redirect()->intended('/')->with('success', 'You now logged in.');
 
 }
 
 
-    public function destroy()
+    public function destroy(Request $request)
     
     {
 Auth::logout();
 
+
+$request->session()->invalidate();
+$request->session()->regenerateToken();
 return redirect('/');
 
     }

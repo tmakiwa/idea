@@ -17,7 +17,9 @@
         {{ $slot }}
     </main>
 
-
+    {{-- <div x-data="{ show: true }" x-inti="setTimeout() => show = false, 3000" x-show="show"
+        x-transition.opacity.duration.300ms class="bg-primary px-4 absolute bottom-4 rounded-lg">Testing For Now
+    </div> --}}
 </body>
 
 </html>

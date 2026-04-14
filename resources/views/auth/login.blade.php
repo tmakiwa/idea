@@ -13,7 +13,7 @@
 
 
 
-            <button type="submit" class="btn mt-2 h-10 w-full">Create Account</button>
+            <button type="submit" class="btn mt-2 h-10 w-full" data-test="login-button">Sign In</button>
 
         </form>
     </x-form>
