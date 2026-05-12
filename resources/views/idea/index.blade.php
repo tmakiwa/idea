@@ -3,7 +3,14 @@
         <header class="py-8 md:py-12">
             <h1 class="text-3xl font-bold">Ideas</h1>
             <p class="text-muted-foreground text-sm mt-2">Capture your thoughts. Make A Plan</p>
+
+            <x-card x-data @click="$dispatch('open-modal','create-modal')" is="button" type="button"
+                class="mt-10 space-y-3 cursor-pointer h-32 w-full text-left">
+                <p> Whats the Idea</p>
+            </x-card>
         </header>
+
+
 
         <div>
             <a href="/ideas" class="btn {{ request()->has('status') ? 'btn-outlined' : '' }}">All</a>
@@ -51,6 +58,14 @@
 
             </div>
         </div>
+
+        <!-- modal -->
+
+        <x-modal name="create-modal" title="New Idea">
+            <p>Slot Content</p>
+        </x-modal>
+
+
     </div>
 
 </x-layout>
