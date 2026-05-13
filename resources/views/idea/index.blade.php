@@ -4,7 +4,7 @@
             <h1 class="text-3xl font-bold">Ideas</h1>
             <p class="text-muted-foreground text-sm mt-2">Capture your thoughts. Make A Plan</p>
 
-            <x-card x-data @click="$dispatch('open-modal','create-modal')" is="button" type="button"
+            <x-card x-data @click="$dispatch('open-modal','create-idea')" is="button" type="button"
                 class="mt-10 space-y-3 cursor-pointer h-32 w-full text-left">
                 <p> Whats the Idea</p>
             </x-card>
@@ -61,8 +61,43 @@
 
         <!-- modal -->
 
-        <x-modal name="create-modal" title="New Idea">
-            <p>Slot Content</p>
+        <x-modal name="create-idea" title="New Idea">
+            <form x-data="{ status: 'pending' }" method="POST" action="{{ route('idea.store') }}">
+                @csrf
+                <div class="space-y-6">
+                    <x-form.field label="Title" name="title" placeholder="Enter an Idea for your title" autofocus
+                        required />
+
+                    <div>
+                        <label for="status" class="status"></label>
+                        <div class="flex gap-x-3">
+                            @foreach (App\IdeaStatus::cases() as $status)
+                                <button type="button" @click="status = @js($status->value)"
+                                    class="btn flex-1 h-10"
+                                    :class="{ 'btn-outlined': status !== @js($status->value) }">
+
+                                    {{ $status->label() }}
+                                </button>
+                            @endforeach
+                            <input type="hidden" name="status" :value="status" class="input">
+                        </div>
+
+                        <x-form.error name="status" />
+
+                    </div>
+
+                    <x-form.field label="Description" name="description" type="textarea"
+                        placeholder="Describe your Idea.." />
+
+                    <div class="flex justify-end gap-x-5">
+                        <button type="button" @click="$dispatch('close-modal')">Cancel</button>
+                        <button type="submit" class="btn">Create</button>
+                    </div>
+                </div>
+
+
+
+            </form>
         </x-modal>
 
 
