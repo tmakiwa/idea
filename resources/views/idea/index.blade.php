@@ -62,7 +62,7 @@
         <!-- modal -->
 
         <x-modal name="create-idea" title="New Idea">
-            <form x-data="{ status: 'pending' }" method="POST" action="{{ route('idea.store') }}">
+            <form x-data="{ status: 'pending', newLink: '', links: [] }" method="POST" action="{{ route('idea.store') }}">
                 @csrf
                 <div class="space-y-6">
                     <x-form.field label="Title" name="title" placeholder="Enter an Idea for your title" autofocus
@@ -88,6 +88,32 @@
 
                     <x-form.field label="Description" name="description" type="textarea"
                         placeholder="Describe your Idea.." />
+
+                    <div>
+                        <fieldset class="space-y-3">
+                            <legend class="label">Links</legend>
+
+                            <template x-for="(link, index) in links" :key="link">
+                                <div class="flex gap-x-2 items-center">
+                                    <input name="links[]" x-model="link" class="input">
+                                    <button type="button" arial-label="Remove link" @click="links.splice(index, 1)">
+                                        X
+                                    </button>
+                                </div>
+                            </template>
+
+                            <div class="flex gap-x-2 items-center">
+                                <input x-model="newLink" type="url" id="new-link" placeholder="https://example.com"
+                                    autocomplete="url" class="input flex-1" spellcheck="false">
+                                <button type="button" @click="links.push(newLink.trim()); newLink = '';"
+                                    :disabled="newLink.trim().length === 0" arial-label="Add a new link">+</button>
+
+                            </div>
+
+
+                        </fieldset>
+
+                    </div>
 
                     <div class="flex justify-end gap-x-5">
                         <button type="button" @click="$dispatch('close-modal')">Cancel</button>
