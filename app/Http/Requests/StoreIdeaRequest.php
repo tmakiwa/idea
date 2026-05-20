@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Http\Requests;
 
 use App\IdeaStatus;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +30,9 @@ class StoreIdeaRequest extends FormRequest
         'description' => ['nullable', 'string'],
         'status' => ['required', Rule::enum(IdeaStatus::class)],
         'links' => ['nullable', 'array'],
-        'links.*' => ['url', 'max:255']
+        'links.*' => ['url', 'max:255'],
+        'steps' => ['nullable', 'array'],
+        'steps.*' => ['string', 'max:255'],
     ];
 }
 }
