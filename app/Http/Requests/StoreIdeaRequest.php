@@ -24,17 +24,17 @@ class StoreIdeaRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-{
-    return [
-        'title' => ['required', 'string'],
-        'description' => ['nullable', 'string'],
-        'status' => ['required', Rule::enum(IdeaStatus::class)],
-        'links' => ['nullable', 'array'],
-        'links.*' => ['url', 'max:255'],
-        'steps' => ['nullable', 'array'],
-        'steps.*' => ['string', 'max:255'],
-        'image' => ['nullable','image', 'max:5120'],
+    {
+        return [
+            'title' => ['required', 'string'],
+            'description' => ['nullable', 'string'],
+            'status' => ['required', Rule::enum(IdeaStatus::class)],
+            'links' => ['nullable', 'array'],
+            'links.*' => ['url', 'max:255'],
+            'steps' => ['nullable', 'array'],
+            'steps.*' => ['string', 'max:255'],
+            'image' => ['nullable', 'image', 'max:5120'],
 
-    ];
-}
+        ];
+    }
 }

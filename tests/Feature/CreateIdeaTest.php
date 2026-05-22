@@ -1,19 +1,29 @@
 <?php
 
-use App\Models\Idea;
 use App\Models\User;
+use function Pest\Laravel\actingAs;
 
-it('creates a new idea', function(){
-    $this->actingAs(User::factory()->create());
+it('creates a new idea', function () {
+    $user = User::factory()->create();
 
-visit('/ideas')
-->click('@create-idea-button')
-->fill('title', 'Some title Eaxmple')
-->click('@button-status-completed')
-->fill('description', 'Example Description')
-->click('Create')
-->assertPathIs('/ideas');
+    actingAs($user);
 
-expect(Idea::count()->toBe(1));
+    visit('/ideas')
+        ->click('@create-idea-button')
+        ->fill('title', 'Some Example Title')
+        ->click('@button-status-completed')
+        ->fill('description', 'Example Description')
+        ->fill('@new-link', 'https://etender.co.za')
+        ->click('@submit-new-link-button')
+        ->fill('@new-link', 'https://etender.com')
+        ->click('@submit-new-link-button')
+        ->click('Create')
+        ->assertPathIs('/ideas');
 
+    expect($user->ideas()->first())->toMatchArray([
+        'title' => 'Some Example Title',
+        'status' => 'completed',
+        'description' => 'Example Description',
+        'links' => ['https://etender.co.za', 'https://etender.com'],
+    ]);
 });
