@@ -30,7 +30,7 @@ public function __construct(#[CurrentUser] protected User $user)
 
         }
 
-        DB::transaction(function () use ($data) {
+        DB::transaction(function () use ($data, $attributes) {
 
             $idea = $this->user->ideas()->create($data);
 

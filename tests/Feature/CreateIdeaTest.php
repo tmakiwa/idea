@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Models\User;
-use function Pest\Laravel\actingAs;
+
 
 it('creates a new idea', function () {
+    
     $user = User::factory()->create();
 
-    actingAs($user);
+    $this->be($user);
 
     visit('/ideas')
         ->click('@create-idea-button')
@@ -17,13 +20,18 @@ it('creates a new idea', function () {
         ->click('@submit-new-link-button')
         ->fill('@new-link', 'https://etender.com')
         ->click('@submit-new-link-button')
+        ->click('@new-step', 'Do thing')
+        ->click('@submit-new-link-button')
+        ->click('@new-step', 'Do another thing')
         ->click('Create')
         ->assertPathIs('/ideas');
 
-    expect($user->ideas()->first())->toMatchArray([
+    expect($idea = $user->ideas()->first())->toMatchArray([
         'title' => 'Some Example Title',
         'status' => 'completed',
         'description' => 'Example Description',
         'links' => ['https://etender.co.za', 'https://etender.com'],
     ]);
+
+    expect($idea->steps)->toHaveCount(2);
 });
