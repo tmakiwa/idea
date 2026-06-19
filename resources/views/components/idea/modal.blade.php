@@ -8,7 +8,7 @@
         newLink: '',
         links: @js(old('links', $idea->links ?? [])),
         newStep: '',
-        steps: @js(old('steps', $idea->steps->map(fn($step) => $step->description)))
+        steps: @js(old('steps', $idea->exists ? $idea->steps->map->only(['id', 'description', 'completed']) : []))
     }" method="POST"
         action="{{ $idea->exists ? route('idea.update', $idea) : route('idea.store') }}" enctype="multipart/form-data">
         @csrf
@@ -64,9 +64,12 @@
                 <fieldset class="space-y-3">
                     <legend class="label">Actionable Steps</legend>
 
-                    <template x-for="(step, index) in steps" :key="step">
+                    <template x-for="(step, index) in steps" :key="step.id || index">
                         <div class="flex gap-x-2 items-center">
-                            <input name="steps[]" x-model="step" class="input">
+                            <input :name="`steps[ [${index}][description]`" x-model="step.description" class="input"
+                                readonly>
+                            <input type="hidden" :name="`steps[${index}][completed]`"
+                                x-model="step.completed ? '1' : '0'" class="input" readonly>
                             <button type="button" aria-label="Remove step" @click="steps.splice(index, 1)">
                                 X
                             </button>
@@ -76,7 +79,8 @@
                     <div class="flex gap-x-2 items-center">
                         <input x-model="newStep" id="new-step" placeholder="What needs to be done" class="input flex-1"
                             spellcheck="false">
-                        <button type="button" @click="steps.push(newStep.trim()); newStep = '';"
+                        <button type="button"
+                            @click="steps.push({description: newStep.trim(), completed: false }); newStep = '';"
                             :disabled="newStep.trim().length === 0" aria-label="Add a new step">+</button>
 
                     </div>
@@ -92,10 +96,11 @@
                 <fieldset class="space-y-3">
                     <legend class="label">Links</legend>
 
-                    <template x-for="(link, index) in links" :key="link">
+                    <template x-for="(link, index) in links" :key="index">
                         <div class="flex gap-x-2 items-center">
-                            <input name="links[]" x-model="link" class="input">
-                            <button type="button" arial-label="Remove link" @click="links.splice(index, 1)">
+                            <input name="links[]" x-model="links[index]" class="input">
+
+                            <button type="button" aria-label="Remove link" @click="links.splice(index, 1)">
                                 X
                             </button>
                         </div>
@@ -105,7 +110,7 @@
                         <input x-model="newLink" type="url" id="new-link" placeholder="https://example.com"
                             autocomplete="url" class="input flex-1" spellcheck="false">
                         <button type="button" @click="links.push(newLink.trim()); newLink = '';"
-                            :disabled="newLink.trim().length === 0" arial-label="Add a new link">+</button>
+                            :disabled="newLink.trim().length === 0" aria-label="Add a new link">+</button>
 
                     </div>
 

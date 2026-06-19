@@ -6,7 +6,6 @@ namespace App\Models;
 
 use App\IdeaStatus;
 use Database\Factories\IdeaFactory;
-use Illuminate\Database\Eloquent\Casts\AsArrayObject;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,14 +17,21 @@ class Idea extends Model
     /** @use HasFactory<IdeaFactory> */
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'status',
+        'links',
+        'image_path',
+    ];
+
     protected $casts = [
-        'links' => AsArrayObject::class,
+        'links' => 'array',
         'status' => IdeaStatus::class,
     ];
 
     protected $attributes = [
         'status' => IdeaStatus::PENDING,
-
     ];
 
     public static function statusCounts(User $user): Collection
@@ -40,7 +46,6 @@ class Idea extends Model
                 $status->value => $counts->get($status->value, 0),
             ])
             ->put('all', $user->ideas()->count());
-
     }
 
     public function user(): BelongsTo

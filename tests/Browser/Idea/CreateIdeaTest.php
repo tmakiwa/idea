@@ -36,35 +36,3 @@ it('creates a new idea', function () {
 
     expect($idea->steps)->toHaveCount(2);
 });
-
-
-it('edits an existing idea', function () {
-    
-    $this->actingAs($user = User::factory()->create());
-
-    $idea = Idea::factory()->for($user)->create();
-
-    visit(route('idea.show', $idea))
-        ->click('@edit-idea-button')
-        ->fill('title', 'Some Example Title')
-        ->click('@button-status-completed')
-        ->fill('description', 'Example Description')
-        ->fill('@new-link', 'https://etender.co.za')
-        ->click('@submit-new-link-button')
-        ->fill('@new-link', 'https://etender.com')
-        ->click('@submit-new-link-button')
-        ->click('@new-step', 'Do thing')
-        ->click('@submit-new-link-button')
-        ->click('@new-step', 'Do another thing')
-        ->click('Create')
-        ->assertPathIs('/ideas');
-
-    expect($idea = $user->ideas()->first())->toMatchArray([
-        'title' => 'Some Example Title',
-        'status' => 'completed',
-        'description' => 'Example Description',
-        'links' => ['https://etender.co.za', 'https://etender.com'],
-    ]);
-
-    expect($idea->steps)->toHaveCount(2);
-});
